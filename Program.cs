@@ -1,371 +1,388 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Xml;
 
 
 namespace SpaceData
 {
-
     class Program
     {
+
+        static List<Astronaut> astronauts = new List<Astronaut>()
+        {
+        new Commander(1, "Stark"),
+        new Pilot(2, "Hulk"),
+        new Scientist(3, "Parker")
+        };
+        static List<Mission> missions = new List<Mission>();
+        static int astronautCounter = 1;
+        static int missionCounter = 1;
+
         public static void Main(string[] args)
         {
-            AMSData amsData = new AMSData();
-
-            int choice;
-
-            do
+            bool exit = false;
+            while(!exit) 
             {
-                Console.WriteLine("\nAstronaut Management System");
-                Console.WriteLine("1. Add Astronaut");
-                Console.WriteLine("2. Edit Astronaut");
-                Console.WriteLine("3. Delete Astronaut");
-                Console.WriteLine("4. View Astronauts");
-                Console.WriteLine("5. Search Astronaut");
-                Console.WriteLine("6. Add Mission");
-                Console.WriteLine("7. Edit Mission");
-                Console.WriteLine("8. Delete Mission");
-                Console.WriteLine("9. View Missions");
-                Console.WriteLine("10. Assign Astronaut to Mission");
-                Console.WriteLine("11. Exit");
+                Console.WriteLine("1. Add Astronaut\n" +
+                             "2. Edit Astronaut\n" +
+                             "3. Delete Astronaut\n" +
+                             "4. View Astronauts\n" +
+                             "5. Search Astronaut\n" +
+                             "6. Add Mission\n" +
+                             "7. Edit Mission\n" +
+                             "8. Delete Mission\n" +
+                             "9. View Missions\n" +
+                             "10. Assign Astronaut to Mission\n" +
+                             "11. Exit\n");
+                Console.WriteLine("Pick a number for desired action: ");
 
-                Console.Write("Enter your choice: ");
+                int i;
+                string option = Console.ReadLine();
+                bool choice = int.TryParse(option, out i);
 
-                choice = Convert.ToInt32(Console.ReadLine());
-
-                switch (choice)
+                
+                if (choice) // if user input numeric
                 {
-                    case 1:
-                        AddAstronaut(amsData);
-                        break;
-                    case 2:
-                        EditAstronaut(amsData);
-                        break;
-                    case 3:
-                        DeleteAstronaut(amsData);
-                        break;
-                    case 4:
-                        amsData.ViewAstronauts();
-                        break;
-                    // case 5:
-                    //     SearchAstronauts(amsData);
-                    //     break;
-                    case 6:
-                        AddMission(amsData);
-                        break;
-                    case 7:
-                        EditMission(amsData);
-                        break;
-                    case 8:
-                        DeleteMission(amsData);
-                        break;
-                    case 9:
-                        amsData.ViewMissions(amsData);
-                        break;
-                    // case 10:
-                    //     AssignAstronautToMission();
-                    case 11:
-                        Console.WriteLine("Exiting AMS...");
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice!");
-                        break;
+                    switch (Int32.Parse(option))
+                    {
+                        case 1:
+                            AddAstronaut();
+                            break;
+                        case 2:
+                            EditAstronaut();
+                            break;
+                        case 3:
+                            DeleteAstronaut();
+                            break;
+                        case 4:
+                            ViewAstronauts();
+                            break;
+                        case 5:
+                            SearchAstronaut();
+                            break;
+                        case 6:
+                            AddMission();
+                            break;
+                        case 7:
+                            EditMission();
+                            break;
+                        case 8:
+                            DeleteMission();
+                            break;
+                        case 9:
+                            ViewMissions();
+                            break;
+                        case 10:
+                            AssignAstronautToMission();
+                            break;
+                        case 11:
+                            exit = true;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice! Press any key to try again.");
+                            Console.ReadKey();
+                            break;
+                    }
                 }
-            } while (choice != 11);
-        }
-
-        public static void AddAstronaut(AMSData amsData)
-        {
-            Console.WriteLine("\nAdd Astronaut");
-            Console.WriteLine("1. Commander");
-            Console.WriteLine("2. Pilot");
-            Console.WriteLine("3. Scientist");
-            Console.WriteLine("4. Engineer");
-            Console.WriteLine("5. Back to Main Menu");
-
-            Console.Write("Enter your choice: ");
-            int choice = Convert.ToInt32(Console.ReadLine());
-
-            switch (choice)
-            {
-                case 1:
-                    AddCommander(amsData);
-                    break;
-                case 2:
-                    AddPilot(amsData);
-                    break;
-                case 3:
-                    AddScientist(amsData);
-                    break;
-                case 4:
-                    AddEngineer(amsData);
-                    break;
-                case 5:
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice!");
-                    break;
+                else
+                {
+                    Console.WriteLine("Invalid input! Press any key to try again.");
+                    Console.ReadKey();
+                }
             }
         }
-        private static void AddCommander(AMSData amsData)
+
+        // Add Astronaut
+        private static void AddAstronaut()
         {
-            string name;
-
-            do
-            {
-                Console.Write("Enter name: ");
-                name = Console.ReadLine();
-
-                if (string.IsNullOrEmpty(name))
-                {
-                    Console.WriteLine("Error: Name cannot be empty. Please enter a name.");
-                }
-            } while (string.IsNullOrEmpty(name));
-
-            Console.Write("Enter experience (years): ");
-            int experience = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Enter number of command missions: ");
-            int commandMissions = Convert.ToInt32(Console.ReadLine());
-
-            // Generate unique ID
-            int id = amsData.Astronauts.Count + 1; // Adjust for your ID generation logic
-
-            Commander commander = new Commander(id, name, experience, commandMissions);
-            amsData.AddAstronaut(commander);
-            Console.WriteLine("Commander added successfully!");
-        }
-
-        private static void AddPilot(AMSData amsData)
-        {
-            Console.Write("Enter name: ");
-            string name = Console.ReadLine();
-
-            Console.Write("Enter experience (years): ");
-            int experience = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Enter flight hours: ");
-            int flightHours = Convert.ToInt32(Console.ReadLine());
-
-            // Pass all required arguments to Pilot constructor
-            Pilot pilot = new Pilot(amsData.Astronauts.Count + 1, name, experience, flightHours);  // Assuming unique ID generation
-
-            amsData.AddAstronaut(pilot); // Add Pilot object to AMSData
-            Console.WriteLine("Pilot added successfully!");
-        }
-
-        private static void AddScientist(AMSData amsData)
-        {
-            Console.Write("Enter name: ");
-            string name = Console.ReadLine();
-
-            Console.Write("Enter experience (years): ");
-            int experience = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Enter field of study: ");
-            string fieldOfStudy = Console.ReadLine();
-
-            // Pass all required arguments to Scientist constructor
-            Scientist scientist = new Scientist(amsData.Astronauts.Count + 1, name, experience, fieldOfStudy);
-
-            amsData.AddAstronaut(scientist); // Add Scientist object to AMSData
-            Console.WriteLine("Scientist added successfully!");
-        }
-
-        private static void AddEngineer(AMSData amsData)
-        {
-            Console.Write("Enter name: ");
-            string name = Console.ReadLine();
-
-            Console.Write("Enter experience (years): ");
-            int experience = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Enter specialization: ");
-            string specialization = Console.ReadLine();
-
-            // Generate unique ID (assuming you want one)
-            int id = amsData.Astronauts.Count + 1; // Adjust for your ID generation logic
-
-            Engineer engineer = new Engineer(id, name, experience, specialization);
-            amsData.AddAstronaut(astronaut: engineer); // Pass engineer object
-            Console.WriteLine("Engineer added successfully!");
-        }
-
-        public static void EditAstronaut(AMSData amsData)
-        {
-            Console.WriteLine("\nEdit Astronaut");
-            Console.Write("Enter astronaut ID: ");
-            int id = Convert.ToInt32(Console.ReadLine());
-
-            if (!amsData.Astronauts.ContainsKey(id))
-            {
-                Console.WriteLine("Astronaut not found!");
-                return;
-            }
-
-            Astronaut astronaut = amsData.Astronauts[id];
-
-            Console.WriteLine($"Editing {astronaut.Name} ({astronaut.GetType().Name})");
-            Console.WriteLine("1. Edit name");
-            Console.WriteLine("2. Edit experience");
-            Console.WriteLine("3. Back to Main Menu");
-
+            Console.WriteLine("Add Astronaut\n" + 
+                        "1. Commander\n" +
+                        "2. Pilot\n" +
+                        "3. Scientist\n" +
+                        "4. Engineer\n" + 
+                        "5. Back to Main Menu");
             Console.Write("Enter your choice: ");
-            int choice = Convert.ToInt32(Console.ReadLine());
 
-            switch (choice)
+            int i;
+            string option = Console.ReadLine();
+            bool choice = int.TryParse(option, out i);
+
+            if (choice) // if user input is numeric 
             {
-                case 1:
+                if (Int32.Parse(option) >= 1 && Int32.Parse(option) <= 4)
+                {
+                    Console.WriteLine("Enter name: ");
+                    string name = Console.ReadLine();
+
+                    // Reference type null will change later to be populated 
+                    Astronaut astronaut = null;
+                    switch (Int32.Parse(option))
+                    {
+                        case 1: // Add new commander and inc
+                            astronaut = new Commander(astronautCounter++, name);
+                            break;
+                        case 2: // Add new pilot and inc
+                            astronaut = new Pilot(astronautCounter++, name);
+                            break;
+                        case 3: // Add new scientist and inc
+                            astronaut = new Scientist(astronautCounter++, name);
+                            break;
+                        case 4: // Add new engineer and inc
+                            astronaut = new Engineer(astronautCounter++, name);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (astronaut != null)
+                    {
+                        astronauts.Add(astronaut);
+                        Console.WriteLine("Astronaut added successfully!");
+                    }
+                }
+            }
+            else if (Int32.Parse(option) != 5)
+            {
+                Console.WriteLine("Invalid choice! Press any key to try again...");
+            }
+            Console.ReadKey();
+        }
+
+        // Edit astronaut
+        private static void EditAstronaut()
+        {
+            Console.WriteLine("Edit Astronaut");
+            ViewAstronauts();
+
+            Console.Write("Enter the ID of the astronaut to edit: ");
+            bool austroId = int.TryParse(Console.ReadLine(), out int id);
+            if (austroId)
+            {
+                Astronaut astronaut = astronauts.FirstOrDefault(a => a.ID == id);
+                if (astronaut != null)
+                {
                     Console.Write("Enter new name: ");
                     astronaut.Name = Console.ReadLine();
-                    break;
-                case 2:
-                    Console.Write("Enter new experience (years): ");
-                    astronaut.Experience = Convert.ToInt32(Console.ReadLine());
-                    break;
-                case 3:
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice!");
-                    break;
+                    Console.WriteLine("Astronaut updated successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Astronaut not found!");
+                }
             }
-
-            Console.WriteLine("Astronaut edited successfully!");
-        }
-        public static void ViewAstronauts(AMSData amsData)
-        {
-            Console.WriteLine("\nView Astronauts");
-
-            if (!amsData.Astronauts.Any())
+            else
             {
-                Console.WriteLine("No astronauts found!");
-                return;
+                Console.WriteLine("Invalid ID! Press any key to try again...");
             }
 
-            Console.WriteLine("List of Astronauts:");
-            foreach (KeyValuePair<int, Astronaut> astronaut in amsData.Astronauts)
-            {
-                Console.WriteLine($"\tID: {astronaut.Key} - Name: {astronaut.Value.Name} - Type: {astronaut.Value.GetType().Name} - Experience: {astronaut.Value.Experience} years");
-            }
+            Console.ReadKey();
         }
 
-
-        public static void AddMission(AMSData amsData)
+        private static void DeleteAstronaut()
         {
-            Console.WriteLine("\nAdd Mission");
-            Console.Write("Enter mission name: ");
+            Console.WriteLine("Delete an Astronaut");
+            ViewAstronauts();
+            Console.WriteLine("Enter ID of astronaut to be deleted: ");
+
+            bool astroId = int.TryParse(Console.ReadLine(), out int id);
+            if (astroId)
+            {
+                Astronaut astronaut = astronauts.FirstOrDefault(a => a.ID == id);
+                if (astronaut != null)
+                {
+                    astronauts.Remove(astronaut);
+                    Console.WriteLine("Astronaut deleted successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Astronaut not found!");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID! Press any key to try again...");
+            }
+
+            Console.ReadKey();
+        }
+
+        private static void ViewAstronauts()
+        {
+            Console.Write("View Astronauts\n");
+            foreach (var astronaut in astronauts)
+            {
+                Console.WriteLine(astronaut);
+            }
+            Console.WriteLine("Press a key to continue");
+            Console.ReadKey();
+        }
+
+        private static void SearchAstronaut()
+        {
+            Console.Write("Search astronaut by name: ");
+            string name = Console.ReadLine();
+            var results = astronauts.Where(a => a.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (results.Count > 0) 
+            {
+                foreach (var astronaut in results)
+                {
+                    Console.WriteLine(astronaut);
+                }
+            } else
+            {
+                Console.WriteLine("No astronauts found.");
+            }
+            Console.WriteLine("Press a key to exit");
+            Console.ReadKey();
+        }
+
+        private static void AddMission()
+        {
+            Console.Clear();
+            Console.WriteLine("Add Mission");
+
+            Console.Write("Enter name: ");
             string name = Console.ReadLine();
 
             Console.Write("Enter launch date (YYYY-MM-DD): ");
-            DateTime launchDate = Convert.ToDateTime(Console.ReadLine());
+            DateTime launchDate = DateTime.Parse(Console.ReadLine());
 
-            Console.Write("Enter mission duration (days): ");
-            int duration = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter duration (days): ");
+            int duration = int.Parse(Console.ReadLine());
 
-            Mission mission = new Mission(amsData.Missions.Count + 1, name, launchDate, duration);
-            amsData.Missions.Add(mission);
+            Mission mission = new Mission(missionCounter++, name, launchDate, duration);
+            missions.Add(mission);
+
             Console.WriteLine("Mission added successfully!");
+            Console.ReadKey();
         }
 
-        // Implement similar methods for EditMission, DeleteMission, ViewMissions
-
-        public static void DeleteAstronaut(AMSData amsData)
+        private static void EditMission()
         {
-            Console.WriteLine("\nDelete Astronaut");
-            Console.Write("Enter astronaut ID: ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            Console.Clear();
+            Console.WriteLine("Edit Mission");
+            ViewMissions();
 
-            if (!amsData.Astronauts.ContainsKey(id))
+            Console.Write("Enter the ID of the mission to edit: ");
+            bool austroId = int.TryParse(Console.ReadLine(), out int id);
+            if (austroId)
             {
-                Console.WriteLine("Astronaut not found!");
-                return;
-            }
-
-            Console.Write($"Are you sure you want to delete astronaut '{amsData.Astronauts[id].Name}' (y/n)? ");
-            char confirmation = Convert.ToChar(Console.ReadLine().ToLower());
-
-            if (confirmation == 'y')
-            {
-                amsData.Astronauts.Remove(id);
-                Console.WriteLine("Astronaut deleted successfully!");
-            }
-            else
-            {
-                Console.WriteLine("Astronaut deletion canceled.");
-            }
-        }
-
-
-        public static void EditMission(AMSData amsData)
-        {
-            Console.WriteLine("\nEdit Mission");
-            Console.Write("Enter mission ID: ");
-            int id = Convert.ToInt32(Console.ReadLine());
-
-            if (!amsData.Missions.Any(m => m.Id == id))
-            {
-                Console.WriteLine("Mission not found!");
-                return;
-            }
-
-            Mission mission = amsData.Missions.Find(m => m.Id == id);
-
-            Console.WriteLine($"Editing mission: {mission.Name}");
-            Console.WriteLine("1. Edit name");
-            Console.WriteLine("2. Edit launch date");
-            Console.WriteLine("3. Edit duration");
-            Console.WriteLine("4. Back to Main Menu");
-
-            Console.Write("Enter your choice: ");
-            int choice = Convert.ToInt32(Console.ReadLine());
-
-            switch (choice)
-            {
-                case 1:
+                Mission mission = missions.FirstOrDefault(m => m.ID == id);
+                if (mission != null)
+                {
                     Console.Write("Enter new name: ");
                     mission.Name = Console.ReadLine();
-                    break;
-                case 2:
+
                     Console.Write("Enter new launch date (YYYY-MM-DD): ");
-                    mission.LaunchDate = Convert.ToDateTime(Console.ReadLine());
-                    break;
-                case 3:
+                    mission.LaunchDate = DateTime.Parse(Console.ReadLine());
+
                     Console.Write("Enter new duration (days): ");
-                    mission.Duration = Convert.ToInt32(Console.ReadLine());
-                    break;
-                case 4:
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice!");
-                    break;
-            }
+                    mission.Duration = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("Mission edited successfully!");
-        }
-
-        public static void DeleteMission(AMSData amsData)
-        {
-            Console.WriteLine("\nDelete Mission");
-            Console.Write("Enter mission ID: ");
-            int id = Convert.ToInt32(Console.ReadLine());
-
-            Mission mission = amsData.Missions.Find(m => m.Id == id);
-
-            if (mission == null)
-            {
-                Console.WriteLine("Mission not found!");
-                return;
-            }
-
-            Console.Write($"Are you sure you want to delete mission '{mission.Name}' (y/n)? ");
-            char confirmation = Convert.ToChar(Console.ReadLine().ToLower());
-
-            if (confirmation == 'y')
-            {
-                amsData.Missions.Remove(mission);
-                Console.WriteLine("Mission deleted successfully!");
+                    Console.WriteLine("Mission updated successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Mission not found!");
+                }
             }
             else
             {
-                Console.WriteLine("Mission deletion canceled.");
+                Console.WriteLine("Invalid ID! Press any key to try again...");
             }
+
+            Console.ReadKey();
+        }
+
+
+        static void DeleteMission()
+        {
+            Console.Clear();
+            Console.WriteLine("Delete Mission");
+            ViewMissions();
+
+            Console.Write("Enter the ID of the mission to delete: ");
+            bool austroId = int.TryParse(Console.ReadLine(), out int id);
+            if (austroId)
+            {
+                Mission mission = missions.FirstOrDefault(m => m.ID == id);
+                if (mission != null)
+                {
+                    missions.Remove(mission);
+                    Console.WriteLine("Mission deleted successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Mission not found!");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID! Press any key to try again...");
+            }
+
+            Console.ReadKey();
+        }
+
+        static void ViewMissions()
+        {
+            Console.Clear();
+            Console.WriteLine("View Missions");
+            foreach (var mission in missions)
+            {
+                Console.WriteLine(mission);
+            }
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        static void AssignAstronautToMission()
+        {
+            Console.Clear();
+            Console.WriteLine("Assign Astronaut to Mission");
+            ViewMissions();
+            Console.Write("Enter the ID of the mission: ");
+            bool missId = int.TryParse(Console.ReadLine(), out int missionId);
+            if (missId)
+            {
+                Mission mission = missions.FirstOrDefault(m => m.ID == missionId);
+                if (mission != null)
+                {
+                    ViewAstronauts();
+                    Console.Write("Enter the ID of the astronaut to assign: ");
+                    bool austroId = int.TryParse(Console.ReadLine(), out int austronautId);
+                    if (austroId)
+                    {
+                        Astronaut astronaut = astronauts.FirstOrDefault(a => a.ID == austronautId);
+                        if (astronaut != null)
+                        {
+                            mission.AssignedAstronauts.Add(astronaut);
+                            Console.WriteLine("Astronaut assigned to mission successfully!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Astronaut not found!");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid ID! Press any key to try again...");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Mission not found!");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID! Press any key to try again...");
+            }
+
+            Console.ReadKey();
         }
 
     }

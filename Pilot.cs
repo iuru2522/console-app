@@ -1,14 +1,13 @@
-
 namespace SpaceData
 {
 
     public class Pilot : Astronaut
     {
-        public int FlightHours { get; set; }
+        //public int FlightHours { get; set; }
 
-        public Pilot(int id, string name, int experience, int flightHours) : base(id, name, experience, AstronautType.Pilot)
+        public Pilot(int id, string name) : base(id, name, AstronautType.Pilot)
         {
-            FlightHours = flightHours;
+            //FlightHours = flightHours;
         }
     }
 

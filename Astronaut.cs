@@ -1,24 +1,50 @@
+using System;
+
 namespace SpaceData
 {
 
-    public enum AstronautType { Commander, Pilot, Scientist, Engineer }
+    public enum AstronautType 
+    { 
+        Commander, 
+        Pilot, 
+        Scientist, 
+        Engineer
+    }
 
     public abstract class Astronaut
     {
-
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Experience { get; set; }
-        public AstronautType Type { get; set; }
-
-
-        public Astronaut(int id, string name, int experience, AstronautType type)
+        // Fields and properties 
+        private int _id;
+        public int ID
         {
-            Id = id;
-            Name = name;
-            Experience = experience;
-            Type = type;
+            get { return _id; }
+            set { _id = value; }
         }
-    }
 
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        private AstronautType _type;
+        public AstronautType Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }
+
+        public Astronaut(int id, string name, AstronautType type)
+        {
+           _id = id;
+           _name = name;
+           _type = type;   
+        }
+
+        public override string ToString()
+        {
+            return $"ID: {_id}, Name: {_name}, Type: {_type}";
+        }
+    } // EO Austronaut class
 }

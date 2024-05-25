@@ -1,15 +1,13 @@
-
-
 namespace SpaceData
 {
 
     public class Commander : Astronaut
     {
-        public int CommandMissions { get; set; }
+        //public int CommandMissions { get; set; }
 
-        public Commander(int id, string name, int experience, int commandMissions) : base(id, name, experience, AstronautType.Commander)
+        public Commander(int id, string name) : base(id, name, AstronautType.Commander)
         {
-            CommandMissions = commandMissions;
+            //CommandMissions = commandMissions;
         }
     }
 
